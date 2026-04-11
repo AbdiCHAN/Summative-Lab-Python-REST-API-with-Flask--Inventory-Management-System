@@ -1,29 +1,28 @@
-from flask import Flask
+import os
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from controllers.inventory_controller import inventory_bp
-
-db = SQLAlchemy()
-migrate = Migrate()
+from config import db, migrate
 
 def create_app(config_name=None):
     app = Flask(__name__)
-    
+
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
-        'DATABASE_URL', 
+        'DATABASE_URL',
         'sqlite:///inventory.db'
     )
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key')
-    
+
     db.init_app(app)
     migrate.init_app(app, db)
-    
-    app.register_blueprint(inventory_bp, url_prefix='/products')
-    
+
+    app.register_blueprint(inventory_bp)
+
     with app.app_context():
         db.create_all()
-    
+
     return app
 
 app = create_app()

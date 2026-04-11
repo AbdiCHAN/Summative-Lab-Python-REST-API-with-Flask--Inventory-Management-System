@@ -54,13 +54,6 @@ def search():
     products = Product.search_by_name(name)
     return jsonify([product.to_dict() for product in products]), 200
 
-@inventory_bp.route('/products', methods=['GET'])
-def filter_by_category():
-    category = request.args.get('category', '')
-    if not category:
-        return jsonify({"error": "Category parameter is required"}), 400
-    products = Product.filter_by_category(category)
-    return jsonify([product.to_dict() for product in products]), 200
 
 @inventory_bp.route('/products/stats', methods=['GET'])
 def stats():
